@@ -16,4 +16,36 @@ node default {
   # Install our custom yoeman, grunt, etc configuration.
   include yeoman
 
+  # Install git via: https://forge.puppetlabs.com/puppetlabs/git
+  # More options are available for global configs etc.
+  include git
+
+  vcsrepo { '/vagrant/angular/base-angular-project':
+      ensure   => present,
+      provider => git,
+      source => "https://github.com/frankcarey/base-angular-project.git"
+  }
+
+  # Install augeas via: https://forge.puppetlabs.com/camptocamp/augeas
+  # This module apprently makes it easier to modify config files by creating a giant tree.
+  # Required by composer for puppet < 3.0
+  include augeas
+
+  # Install composer via: https://forge.puppetlabs.com/tPl0ch/composer
+  # We don't have the suhosin security patch, so we need this setting.
+  class { 'composer':
+    suhosin_enabled => false,
+  }
+
+  # Doh, it's not composer we need but npm to install package.json
+  #composer::exec { 'base-angular-project-install':
+  #  cmd => 'install',
+  #  cwd => '/vagrant/angular/base-angular-project',
+  #}
+
+  exec { 'npm install':
+        path    => '/usr/local/node/node-default/bin/',
+        cwd     => '/vagrant/angular/base-angular-project',
+        require => [Vcsrepo['/vagrant/angular/base-angular-project'],Class['nodejs']],
+    }
 }
