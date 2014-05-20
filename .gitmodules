@@ -13,3 +13,9 @@
 [submodule "puppet-modules/yeoman"]
 	path = puppet-modules/yeoman
 	url = git@github.com:frankcarey/puppet-yeoman.git
+[submodule "puppet-modules/vcsrepo"]
+	path = puppet-modules/vcsrepo
+	url = git@github.com:puppetlabs/puppetlabs-vcsrepo.git
+[submodule "puppet-modules/git"]
+	path = puppet-modules/git
+	url = git@github.com:puppetlabs/puppetlabs-git.git
