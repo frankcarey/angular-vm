@@ -2,7 +2,7 @@ CHANGELOG
 ======
 
 * Added settings for puppet via: http://docs.vagrantup.com/v2/provisioning/puppet_apply.html
-
+* Install npm via: https://forge.puppetlabs.com/willdurand/nodejs
 
 TODOS
 ======
