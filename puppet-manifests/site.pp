@@ -13,6 +13,18 @@ node default {
       ruby_package => 'ruby1.9.1',
       rubygems_package => 'ruby1.9.1-full',
   }
+  # Install and setup avahi for broadcasting our domain over bonjour
+  # eliminating the need to edit a hosts file.
+  class { 'avahi':
+        firewall => false
+  }
+  # This should make this domain available at domain other than angular-vm.local
+  # There is no need to set this if alrady set in change the vagrant hostname settings
+  # The change is not permanent so this can be changed whenever.
+  # exec { 'sudo avahi-set-host-name angular-vm':
+  #       require => [Class['avahi']],
+  # }
+
   # Install our custom yoeman, grunt, etc configuration.
   include yeoman
 

@@ -24,6 +24,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
   config.vm.network :private_network, ip: "192.168.33.10"
+  config.vm.hostname = "angular-vm"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on
@@ -77,6 +78,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppet.manifests_path = "puppet-manifests"
     puppet.manifest_file  = "site.pp"
     puppet.module_path = "puppet-modules"
+    # puppet 3 complains about a missing hiera.yml file, so explicity set the default.
+    puppet.options = "--hiera_config /vagrant/hiera.yaml"
+    # puppet complains about fqdn (fully qualified domain name)
+    puppet.facter = { "fqdn" => "angular-vm.local", "hostname" => "angular-vm" }
   end
 
   # Enable provisioning with chef solo, specifying a cookbooks path, roles
