@@ -22,3 +22,6 @@
 [submodule "puppet-modules/composer"]
 	path = puppet-modules/composer
 	url = git://github.com/tPl0ch/puppet-composer.git
+[submodule "puppet-modules/augeas"]
+	path = puppet-modules/augeas
+	url = git@github.com:camptocamp/puppet-augeas.git
