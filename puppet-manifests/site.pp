@@ -1,5 +1,8 @@
 
 node default {
+  # Set our paths globally so we don't have to add them each time.
+  Exec { path =>   [ "/bin/", "/sbin/" , "/usr/bin/", "/usr/sbin/", "/usr/local/node/node-default/bin/" ] }
+
   # Install node.js via https://forge.puppetlabs.com/willdurand/nodejs
   # See that url for installing multiple versions, and more options.
   class { 'nodejs':
@@ -56,8 +59,19 @@ node default {
   #}
 
   exec { 'npm install':
-        path    => '/usr/local/node/node-default/bin/',
         cwd     => '/vagrant/angular/base-angular-project',
         require => [Vcsrepo['/vagrant/angular/base-angular-project'],Class['nodejs']],
+    }
+
+  exec { 'bower install':
+        cwd     => '/vagrant/angular/base-angular-project',
+        require => [Vcsrepo['/vagrant/angular/base-angular-project'],Class['nodejs']],
+        user => 'vagrant',
+    }
+
+  exec { 'nohup grunt serve &':
+        cwd     => '/vagrant/angular/base-angular-project',
+        require => [Vcsrepo['/vagrant/angular/base-angular-project'],Class['nodejs']],
+        user => 'vagrant'
     }
 }
