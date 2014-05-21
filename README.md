@@ -97,7 +97,7 @@ You should be able to use your favorite editor to open the files in `./angular/b
               package.json
               test
 
-That's a lot more files than you'd get with a simple index.html file that you edit locally, and while it adds some compelexity when starting out, it will help you structure your app cleanly from the beginning and expose you some best practices and helpful tools.
+That's a lot more files than you'd get with a simple index.html file that you edit locally, and while it adds some compelexity when starting out, it will help you structure your app cleanly from the beginning and expose you some best practices and helpful tools. Checkout this article which makes the case for using grunt if you think you need more convincing: http://24ways.org/2013/grunt-is-not-weird-and-hard/
 
 Editing the code in ./app
 -------------------------
