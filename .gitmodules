@@ -28,3 +28,6 @@
 [submodule "puppet-modules/avahi"]
 	path = puppet-modules/avahi
 	url = git@github.com:maestrodev/puppet-avahi.git
+[submodule "puppet-manifests/bootstrap-scripts"]
+	path = puppet-manifests/bootstrap-scripts
+	url = git@github.com:hashicorp/puppet-bootstrap.git
