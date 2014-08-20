@@ -80,7 +80,8 @@ node default {
 
   # CUSTOMIZE: You can disable the automatic running of the server for the angular-project by commenting out the exex.
   # Try to run the grunt server. If it times-out just run the command from within the project.
-  exec { 'nohup grunt serve &':
+  # Fix: Needs to be "properly daemonized". See https://github.com/mitchellh/vagrant/issues/1553
+  exec { 'nohup grunt serve 0<&- &>/dev/null &':
         cwd     => '/vagrant/angular-project',
         require => [Vcsrepo['/vagrant/angular-project'],Class['nodejs']],
         user => 'vagrant'
