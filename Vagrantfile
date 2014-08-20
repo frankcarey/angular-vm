@@ -89,7 +89,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppet.manifest_file  = "site.pp"
     puppet.module_path = "puppet-modules"
     # puppet 3 complains about a missing hiera.yml file, so explicity set the default.
-    puppet.options = "--hiera_config /vagrant/hiera.yaml"
+    # Also, add debug and verbose so we can see what's happening.
+    puppet.options = "--hiera_config /vagrant/hiera.yaml --verbose --debug"
     # puppet complains about fqdn (fully qualified domain name)
     puppet.facter = { "fqdn" => "angular-vm.local", "hostname" => "angular-vm" }
   end
