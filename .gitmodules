@@ -28,3 +28,6 @@
 [submodule "puppet-modules/avahi"]
 	path = puppet-modules/avahi
 	url = git@github.com:maestrodev/puppet-avahi.git
+[submodule "puppet-modules/ssh"]
+	path = puppet-modules/ssh
+	url = https://github.com/blt/puppet-ssh.git
