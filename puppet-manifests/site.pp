@@ -66,16 +66,20 @@ node default {
   #}
 
   # CUSTOMIZE: You can add additional projects or change the location/name of the angular-project
-  exec { "install-yoeman-project-dependencies":
+  exec { "install yoeman-project-dependencies":
         command => "npm install \
                     && bower install\
                     && grunt build",
         cwd     => '/vagrant/angular-project',
         require => [Vcsrepo['/vagrant/angular-project'],Class['nodejs']],
+        # CUSTOMIZE: Comment out the "creates" line to have it always do a fresh build on vagrant reload
         creates => "/vagrant/angular-project/node_modules",
+        logoutput   => true,
+        timeout     => 1800,
     }
 
-  # CUSTOMIZE: You can disable the automatic running of the server for the angular-project.
+  # CUSTOMIZE: You can disable the automatic running of the server for the angular-project by commenting out the exex.
+  # Try to run the grunt server. If it times-out just run the command from within the project.
   exec { 'nohup grunt serve &':
         cwd     => '/vagrant/angular-project',
         require => [Vcsrepo['/vagrant/angular-project'],Class['nodejs']],
