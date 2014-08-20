@@ -35,7 +35,14 @@ node default {
   # More options are available for global configs etc.
   include git
 
-  vcsrepo { '/vagrant/angular/base-angular-project':
+  # Setup known_hosts so that keys work with private repos.
+  ssh::resource::known_hosts { 'common-hosts':
+      # CUSTOMIZE: Add hosts for additional private repo locations.
+      hosts => 'github.com,bitbucket.org',
+      user => 'vagrant',
+  }
+  # CUSTOMIZE: Update the location / name of the angular project.
+  vcsrepo { '/vagrant/angular-project':
       ensure   => present,
       provider => git,
       source => "https://github.com/frankcarey/base-angular-project.git"
@@ -48,9 +55,9 @@ node default {
 
   # Install composer via: https://forge.puppetlabs.com/tPl0ch/composer
   # We don't have the suhosin security patch, so we need this setting.
-  class { 'composer':
-    suhosin_enabled => false,
-  }
+  # class { 'composer':
+  #   suhosin_enabled => false,
+  # }
 
   # Doh, it's not composer we need but npm to install package.json
   #composer::exec { 'base-angular-project-install':
@@ -58,20 +65,20 @@ node default {
   #  cwd => '/vagrant/angular/base-angular-project',
   #}
 
-  exec { 'npm install':
-        cwd     => '/vagrant/angular/base-angular-project',
-        require => [Vcsrepo['/vagrant/angular/base-angular-project'],Class['nodejs']],
+  # CUSTOMIZE: You can add additional projects or change the location/name of the angular-project
+  exec { "install-yoeman-project-dependencies":
+        command => "npm install \
+                    && bower install\
+                    && grunt build",
+        cwd     => '/vagrant/angular-project',
+        require => [Vcsrepo['/vagrant/angular-project'],Class['nodejs']],
+        creates => "/vagrant/angular-project/node_modules",
     }
 
-  exec { 'bower install':
-        cwd     => '/vagrant/angular/base-angular-project',
-        require => [Vcsrepo['/vagrant/angular/base-angular-project'],Class['nodejs']],
-        user => 'vagrant',
-    }
-
+  # CUSTOMIZE: You can disable the automatic running of the server for the angular-project.
   exec { 'nohup grunt serve &':
-        cwd     => '/vagrant/angular/base-angular-project',
-        require => [Vcsrepo['/vagrant/angular/base-angular-project'],Class['nodejs']],
+        cwd     => '/vagrant/angular-project',
+        require => [Vcsrepo['/vagrant/angular-project'],Class['nodejs']],
         user => 'vagrant'
     }
 }
