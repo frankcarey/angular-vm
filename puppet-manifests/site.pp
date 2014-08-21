@@ -28,8 +28,13 @@ node default {
   #       require => [Class['avahi']],
   # }
 
+  # Install augeas via: https://forge.puppetlabs.com/camptocamp/augeas
+  # This module apprently makes it easier to modify config files by creating a giant tree.
+  # Required by composer for puppet < 3.0
+  include augeas
+
   # Install our custom yoeman, grunt, etc configuration.
-  include yeoman
+  #include yeoman
 
   # Install git via: https://forge.puppetlabs.com/puppetlabs/git
   # More options are available for global configs etc.
@@ -55,51 +60,9 @@ node default {
       target => $projects,
   } ~> #Do first then..
 
-  # CUSTOMIZE: Update the location / name of the angular project.
-  vcsrepo { "${projects}/angular-project":
-      ensure   => present,
-      provider => git,
-      source => "https://github.com/frankcarey/base-angular-project.git"
+  yeoman::project { "$projects/angular-project" :
+    path => "$projects/angular-project",
+    generators => ["generator-angular"],
+    repo => "https://github.com/frankcarey/base-angular-project.git"
   }
-
-  # Install augeas via: https://forge.puppetlabs.com/camptocamp/augeas
-  # This module apprently makes it easier to modify config files by creating a giant tree.
-  # Required by composer for puppet < 3.0
-  include augeas
-
-  # Install composer via: https://forge.puppetlabs.com/tPl0ch/composer
-  # We don't have the suhosin security patch, so we need this setting.
-  # class { 'composer':
-  #   suhosin_enabled => false,
-  # }
-
-  # Doh, it's not composer we need but npm to install package.json
-  #composer::exec { 'base-angular-project-install':
-  #  cmd => 'install',
-  #  cwd => '/vagrant/angular/base-angular-project',
-  #}
-
-  # @TODO: Pull this stuff out and put into an actual puppet-module (yeoman).
-  # CUSTOMIZE: You can add additional projects or change the location/name of the angular-project
-  exec { "install yoeman-project-dependencies":
-        command => "npm install \
-                    && bower install --config.interactive=false \
-                    && grunt build",
-        cwd     => "${projects}/angular-project",
-        require => [Vcsrepo["${projects}/angular-project"],Class['nodejs']],
-        # CUSTOMIZE: Comment out the "creates" line to have it always do a fresh build on vagrant reload
-        creates => "${projects}/angular-project/node_modules",
-        logoutput => true,
-        loglevel => 'info',
-        timeout => 1800,
-    } ~> #Do this first...
-
-  # CUSTOMIZE: You can disable the automatic running of the server for the angular-project by commenting out the exex.
-  # Try to run the grunt server. If it times-out just run the command from within the project.
-  # Fix: Needs to be "properly daemonized". See https://github.com/mitchellh/vagrant/issues/1553
-  exec { 'nohup grunt serve 0<&- &>/dev/null &':
-        cwd     => "${projects}/angular-project",
-        require => [Vcsrepo["${projects}/angular-project"],Class['nodejs']],
-        user => 'vagrant'
-    }
 }
